@@ -1,0 +1,33 @@
+# Explicit environment override to force correct Ollama host
+services:
+  rag-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag-app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # EXPLICIT override - this takes precedence over .env
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - GENERATION_MODEL=qwen2:7b
+      - RERANKER_MODEL=BAAI/bge-reranker-base
+      - LANCEDB_PATH=/app/index_store/lancedb
+      - SESSION_DB_PATH=/app/backend/chat_data.db
+      - BACKEND_PORT=8000
+      - FRONTEND_PORT=3000
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
+    volumes:
+      - ./shared_uploads:/app/shared_uploads
+      - ./index_store:/app/index_store
+      - ./logs:/app/logs
+      - ./backend:/app/backend
+    # Comment out env_file to avoid conflicts
+    # env_file:
+    #   - .env
+    ports:
+      - "8000:8000"
+      - "3000:3000"
+    restart: unless-stopped

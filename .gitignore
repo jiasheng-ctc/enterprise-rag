@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+logs/
+shared_uploads/
+index_store/
+backend/*.db
